@@ -37,6 +37,7 @@ as described in lecture. Note this requires a heap that supports deletions,
 and you'll probably need to maintain some kind of mapping between vertices
 and their positions in the heap.
 
+SOLUTION: -3612829
 '''
 
 
