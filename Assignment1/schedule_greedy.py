@@ -76,7 +76,7 @@ def schedule_ratio(jobs):
 
 
 def main():
-    fname = "/home/edoardo/docker-drive/AlgorithmsDesignII/Assignment1/jobs.txt"
+    fname = "jobs.txt"
     jobs = read_jobs(fname)
 
     scores_diff = schedule_diff(jobs)

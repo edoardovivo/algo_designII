@@ -80,7 +80,7 @@ def find_mst(graph, s):
 
 
 def main():
-    fname = "/home/edoardo/docker-drive/AlgorithmsDesignII/Assignment1/edges.txt"
+    fname = "edges.txt"
     graph = read_graph(fname)
     # Starting node
     s = graph[0][0]
