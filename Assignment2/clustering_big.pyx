@@ -26,13 +26,13 @@ NOTE: The graph implicitly defined by the data file is so big that you probably 
 '''
 
 
-def invert(bit):
+cpdef invert(bit):
     if bit != '0' and bit != '1':
         raise ValueError
     return '1' if bit == '0' else '0'
 
 
-def similar(v):
+cpdef similar(v):
     out = []
     for i in range(len(v)):
         out.append(v[:i] + invert(v[i]) + v[i + 1:])
@@ -42,9 +42,9 @@ def similar(v):
     return out
 
 
-def main2():
+cpdef find_clusters(fname):
     vertices = ["".join(x.split(' ')) for x in open(
-        'clustering_big.txt', 'r').read().split('\n')[0:-1]]
+        fname, 'r').read().split('\n')[0:1000]]
     heads = {}
     for v in vertices:
         heads[v] = v
@@ -53,12 +53,13 @@ def main2():
     cnt = 0
     for v in vertices:
         cnt += 1
-        print cnt
+        #print cnt
         v_head = heads[v]
         while heads[v_head] != v_head:
             v_head = heads[v_head]
 
-        for friend in similar(v):
+        sim = similar(v)
+        for friend in sim:
             if heads.get(friend):
 
                 head = heads[friend]
@@ -67,4 +68,6 @@ def main2():
                 if v_head != head:
                     heads[head] = v_head
                     clusters -= 1
-    print clusters
+    print "N clusters: ", clusters
+
+
