@@ -44,30 +44,97 @@ cpdef similar(v):
 
 cpdef find_clusters(fname):
     vertices = ["".join(x.split(' ')) for x in open(
-        fname, 'r').read().split('\n')[0:1000]]
-    heads = {}
+        fname, 'r').read().split('\n')[0:10]]
+    nodes = {}
+    # This gives u a dictionary where both key and values are
+    # given by the same string 
     for v in vertices:
-        heads[v] = v
-    clusters = len(heads)
+        nodes[v] = v
+    # Now the number of clusters if the same as the number of nodes
+    clusters = len(nodes)
 
-    cnt = 0
+    #cnt = 0
+    # For each vertex..
     for v in vertices:
-        cnt += 1
+        #cnt += 1
         #print cnt
-        v_head = heads[v]
-        while heads[v_head] != v_head:
-            v_head = heads[v_head]
+        # Get the value for the vertex
+        v_head = nodes[v]
+        # If key and value are different
+        # then v_head is equal to the VALUE
+        while nodes[v_head] != v_head:
+            v_head = nodes[v_head]
 
+        # sim is the set of all nodes at distance at most 2 from v
         sim = similar(v)
         for friend in sim:
-            if heads.get(friend):
-
-                head = heads[friend]
-                while heads[head] != head:
-                    head = heads[head]
+            # If the friend node is in the graph
+            if nodes.get(friend):
+                # Consider the value associated with that node
+                head = nodes[friend]
+                # Consider the value associated with the key head
+                # If head and its value are different, then reassign 
+                # head as its correct value
+                while nodes[head] != head:
+                    head = nodes[head]
+                # Compare v_head and head
+                # If they are different, they belong to the 
+                # same cluster (?)
                 if v_head != head:
-                    heads[head] = v_head
+                    nodes[head] = v_head
                     clusters -= 1
+    print nodes
+    print "N clusters: ", clusters
+
+
+cpdef find_clusters2(fname):
+    vertices = ["".join(x.split(' ')) for x in open(
+        fname, 'r').read().split('\n')[0:200]]
+    nodes = {}
+    for (i,v) in enumerate(vertices):
+        nodes[v] = i
+    # Now the number of clusters if the same as the number of nodes
+    clusters = len(nodes)
+    #cnt = 0
+    # For each vertex..
+    for v in vertices:
+        try:
+            node = nodes[v]
+        except:
+            continue
+        sim = similar(v)
+        for friend in sim:
+            if nodes.get(friend):
+                    nodes.pop(friend) #nodes[friend] = node
+                    clusters -= 1
+        nodes.pop(v)
+        #cnt += 1
+        #print cnt
+        # Get the value for the vertex
+        #v_head = nodes[v]
+        ## If key and value are different
+        ## then v_head is equal to the VALUE
+        #while nodes[v_head] != v_head:
+        #    v_head = nodes[v_head]
+#
+#        ## sim is the set of all nodes at distance at most 2 from v
+#        #sim = similar(v)
+#        #for friend in sim:
+#        #    # If the friend node is in the graph
+#        #    if nodes.get(friend):
+#        #        # Consider the value associated with that node
+#        #        head = nodes[friend]
+#        #        # Consider the value associated with the key head
+#        #        # If head and its value are different, then reassign 
+#        #        # head as its correct value
+#        #        while nodes[head] != head:
+#        #            head = nodes[head]
+#        #        # Compare v_head and head
+#        #        # If they are different, they belong to the 
+#        #        # same cluster (?)
+#        #        if v_head != head:
+#        #            nodes[head] = v_head
+        #            clusters -= 1
     print "N clusters: ", clusters
 
 
