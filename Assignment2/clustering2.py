@@ -25,49 +25,7 @@ NOTE: The graph implicitly defined by the data file is so big that you probably 
 
 '''
 
+import clustering_big as clb
 
-cpdef invert(bit):
-    if bit != '0' and bit != '1':
-        raise ValueError
-    return '1' if bit == '0' else '0'
-
-
-cpdef similar(v):
-    out = []
-    for i in range(len(v)):
-        out.append(v[:i] + invert(v[i]) + v[i + 1:])
-        for j in range(i + 1, len(v)):
-            out.append(v[:i] + invert(v[i]) + v[i + 1:j] +
-                       invert(v[j]) + v[j + 1:])
-    return out
-
-
-cpdef find_clusters(fname):
-    vertices = ["".join(x.split(' ')) for x in open(
-        fname, 'r').read().split('\n')[0:1000]]
-    heads = {}
-    for v in vertices:
-        heads[v] = v
-    clusters = len(heads)
-
-    cnt = 0
-    for v in vertices:
-        cnt += 1
-        #print cnt
-        v_head = heads[v]
-        while heads[v_head] != v_head:
-            v_head = heads[v_head]
-
-        sim = similar(v)
-        for friend in sim:
-            if heads.get(friend):
-
-                head = heads[friend]
-                while heads[head] != head:
-                    head = heads[head]
-                if v_head != head:
-                    heads[head] = v_head
-                    clusters -= 1
-    print "N clusters: ", clusters
-
-
+fname = "clustering_big.txt"
+clb.find_clusters(fname)
