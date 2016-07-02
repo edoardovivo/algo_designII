@@ -33,7 +33,7 @@ def read_items(fname, nlines=None):
     n = int(data[0, 1])
     data = data[1:, :]
     items = {}
-    if (nlines == None):
+    if (nlines is None):
         nlines = n
     for i in xrange(1, nlines):
         items[i] = {"weight": data[i - 1, 1],
