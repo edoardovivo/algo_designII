@@ -28,4 +28,4 @@ NOTE: The graph implicitly defined by the data file is so big that you probably 
 import clustering_big as clb
 
 fname = "clustering_big.txt"
-clb.find_clusters2(fname)
+clb.find_clusters(fname, 20000)

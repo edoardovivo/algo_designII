@@ -25,6 +25,32 @@ NOTE: The graph implicitly defined by the data file is so big that you probably 
 
 '''
 
+from itertools import izip, imap
+from itertools import permutations
+import operator
+
+
+cpdef aux_permutations(l):
+    initial = '0'*l
+    out = []
+    for i in xrange(0,l):
+        z = list(initial)
+        z[i] = '1'
+        out.append(int(''.join(z), 2))
+        for j in xrange(i+1, l):
+            w = list(z)
+            w[j] = '1'
+            out.append(int(''.join(w), 2))
+    return out
+
+
+
+cpdef hamming(str1, str2):
+    assert len(str1) == len(str2)
+    #ne = str.__ne__  ## this is surprisingly slow
+    ne = operator.ne
+    return sum(imap(ne, str1, str2))
+
 
 cpdef invert(bit):
     if bit != '0' and bit != '1':
@@ -42,99 +68,44 @@ cpdef similar(v):
     return out
 
 
-cpdef find_clusters(fname):
-    vertices = ["".join(x.split(' ')) for x in open(
-        fname, 'r').read().split('\n')[0:10]]
-    nodes = {}
-    # This gives u a dictionary where both key and values are
-    # given by the same string 
-    for v in vertices:
-        nodes[v] = v
-    # Now the number of clusters if the same as the number of nodes
-    clusters = len(nodes)
-
-    #cnt = 0
-    # For each vertex..
-    for v in vertices:
-        #cnt += 1
-        #print cnt
-        # Get the value for the vertex
-        v_head = nodes[v]
-        # If key and value are different
-        # then v_head is equal to the VALUE
-        while nodes[v_head] != v_head:
-            v_head = nodes[v_head]
-
-        # sim is the set of all nodes at distance at most 2 from v
-        sim = similar(v)
-        for friend in sim:
-            # If the friend node is in the graph
-            if nodes.get(friend):
-                # Consider the value associated with that node
-                head = nodes[friend]
-                # Consider the value associated with the key head
-                # If head and its value are different, then reassign 
-                # head as its correct value
-                while nodes[head] != head:
-                    head = nodes[head]
-                # Compare v_head and head
-                # If they are different, they belong to the 
-                # same cluster (?)
-                if v_head != head:
-                    nodes[head] = v_head
-                    clusters -= 1
-    print nodes
-    print "N clusters: ", clusters
+cpdef similar2(v, aux_permut, l):
+    return ['{0:0{1}b}'.format(v ^ w,l) for w in aux_permut]
 
 
-cpdef find_clusters2(fname):
-    vertices = ["".join(x.split(' ')) for x in open(
-        fname, 'r').read().split('\n')[0:200]]
+cpdef find_clusters(fname, n):
+    cdef vertices = ["".join(x.split(' ')) for x in open(
+        fname, 'r').read().split('\n')[0:n]]
+
+    #aux_perm = aux_permutations(24)
+    vertices = set(vertices)
+    
     nodes = {}
     for (i,v) in enumerate(vertices):
         nodes[v] = i
     # Now the number of clusters if the same as the number of nodes
-    clusters = len(nodes)
-    #cnt = 0
+    cdef int clusters = len(nodes)
     # For each vertex..
     for v in vertices:
+        # Check if the node exists
         try:
             node = nodes[v]
         except:
             continue
+        # If it does, find the similar nodes (hamming distance <= 2)
+        
+        #s = int(v, 2)
+        #sim = similar2(s, aux_perm, 24)
         sim = similar(v)
+        # For each similar node, if it is in the graph, assign it 
+        # to the same cluster as v, and decrease the number of clusters.
+        # Also pop it from the dictionary, so that it will not be visited again
         for friend in sim:
             if nodes.get(friend):
                     nodes.pop(friend) #nodes[friend] = node
                     clusters -= 1
+        # Pop the original node from the dictionary, so it will not be visited again
         nodes.pop(v)
-        #cnt += 1
-        #print cnt
-        # Get the value for the vertex
-        #v_head = nodes[v]
-        ## If key and value are different
-        ## then v_head is equal to the VALUE
-        #while nodes[v_head] != v_head:
-        #    v_head = nodes[v_head]
-#
-#        ## sim is the set of all nodes at distance at most 2 from v
-#        #sim = similar(v)
-#        #for friend in sim:
-#        #    # If the friend node is in the graph
-#        #    if nodes.get(friend):
-#        #        # Consider the value associated with that node
-#        #        head = nodes[friend]
-#        #        # Consider the value associated with the key head
-#        #        # If head and its value are different, then reassign 
-#        #        # head as its correct value
-#        #        while nodes[head] != head:
-#        #            head = nodes[head]
-#        #        # Compare v_head and head
-#        #        # If they are different, they belong to the 
-#        #        # same cluster (?)
-#        #        if v_head != head:
-#        #            nodes[head] = v_head
-        #            clusters -= 1
+
     print "N clusters: ", clusters
 
 
