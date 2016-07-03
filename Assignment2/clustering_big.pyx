@@ -79,16 +79,13 @@ cpdef find_clusters(fname, n):
 
     #aux_perm = aux_permutations(24)
     
-    #vertices = set(vertices)    
-
     nodes = {}
     for (i,v) in enumerate(vertices):
         nodes[v] = i
     # Now the number of clusters if the same as the number of nodes
     cdef int clusters = len(nodes)
     U = UnionFind.UnionFind(len(vertices))
-    print U.size
-    #vertices = set(vertices)
+
     # For each vertex..
     for v in vertices:
         # Check if the node exists
@@ -102,9 +99,8 @@ cpdef find_clusters(fname, n):
         #s = int(v, 2)
         #sim = similar2(s, aux_perm, 24)
         sim = similar(v)
-        # For each similar node, if it is in the graph, assign it 
+        # For each similar node, if it is in the graph and no loops are created, assign it 
         # to the same cluster as v, and decrease the number of clusters.
-        # Also pop it from the dictionary, so that it will not be visited again
         for friend in sim:
             if nodes.get(friend):
                     n1 = node - 1
@@ -114,13 +110,6 @@ cpdef find_clusters(fname, n):
                     if (U.find(n1) != U.find(n2)):
                         U.union(n1, n2)
                         clusters -= 1
-                    #nodes.pop(friend) #nodes[friend] = node
-                    #if (nodes[friend] != node):
-                    #    nodes[friend] = node
-                    #    clusters -= 1
-                        
-        # Pop the original node from the dictionary, so it will not be visited again
-        #nodes.pop(v)
     
 
     print "N clusters: ", clusters
