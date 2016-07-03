@@ -28,6 +28,7 @@ NOTE: The graph implicitly defined by the data file is so big that you probably 
 from itertools import izip, imap
 from itertools import permutations
 import operator
+import UnionFind
 
 
 cpdef aux_permutations(l):
@@ -79,11 +80,14 @@ cpdef find_clusters(fname, n):
     #aux_perm = aux_permutations(24)
     
     #vertices = set(vertices)    
+
     nodes = {}
     for (i,v) in enumerate(vertices):
         nodes[v] = i
     # Now the number of clusters if the same as the number of nodes
     cdef int clusters = len(nodes)
+    U = UnionFind.UnionFind(len(vertices))
+    print U.size
     #vertices = set(vertices)
     # For each vertex..
     for v in vertices:
@@ -92,6 +96,7 @@ cpdef find_clusters(fname, n):
             node = nodes[v]
         except:
             continue
+
         # If it does, find the similar nodes (hamming distance <= 2)
         
         #s = int(v, 2)
@@ -102,12 +107,21 @@ cpdef find_clusters(fname, n):
         # Also pop it from the dictionary, so that it will not be visited again
         for friend in sim:
             if nodes.get(friend):
-                    #nodes.pop(friend) #nodes[friend] = node
-                    if (nodes[friend] != node):
-                        nodes[friend] = node
+                    n1 = node - 1
+                    n2 = nodes[friend] - 1
+                    #print n1, n2
+                    #print U.size
+                    if (U.find(n1) != U.find(n2)):
+                        U.union(n1, n2)
                         clusters -= 1
+                    #nodes.pop(friend) #nodes[friend] = node
+                    #if (nodes[friend] != node):
+                    #    nodes[friend] = node
+                    #    clusters -= 1
+                        
         # Pop the original node from the dictionary, so it will not be visited again
         #nodes.pop(v)
+    
 
     print "N clusters: ", clusters
 
