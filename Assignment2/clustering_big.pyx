@@ -77,13 +77,14 @@ cpdef find_clusters(fname, n):
         fname, 'r').read().split('\n')[0:n]]
 
     #aux_perm = aux_permutations(24)
-    vertices = set(vertices)
     
+    #vertices = set(vertices)    
     nodes = {}
     for (i,v) in enumerate(vertices):
         nodes[v] = i
     # Now the number of clusters if the same as the number of nodes
     cdef int clusters = len(nodes)
+    #vertices = set(vertices)
     # For each vertex..
     for v in vertices:
         # Check if the node exists
@@ -101,10 +102,12 @@ cpdef find_clusters(fname, n):
         # Also pop it from the dictionary, so that it will not be visited again
         for friend in sim:
             if nodes.get(friend):
-                    nodes.pop(friend) #nodes[friend] = node
-                    clusters -= 1
+                    #nodes.pop(friend) #nodes[friend] = node
+                    if (nodes[friend] != node):
+                        nodes[friend] = node
+                        clusters -= 1
         # Pop the original node from the dictionary, so it will not be visited again
-        nodes.pop(v)
+        #nodes.pop(v)
 
     print "N clusters: ", clusters
 
