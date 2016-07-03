@@ -14,7 +14,7 @@ This file describes a distance function (equivalently, a complete graph with edg
 
 ...
 
-There is one edge (i,j) for each choice of 1≤i<j≤n, where n is the number of nodes.
+There is one edge (i,j) for each choice of 1 i j n, where n is the number of nodes.
 
 For example, the third line of the file is "1 3 5250", indicating that the distance between nodes 1 and 3 (equivalently, the cost of the edge (1,3)) is 5250. You can assume that distances are positive, but you should NOT assume that they are distinct.
 
@@ -22,7 +22,7 @@ Your task in this problem is to run the clustering algorithm from lecture on thi
 
 ADVICE: If you're not getting the correct answer, try debugging your algorithm using some small test cases. And then post them to the discussion forum!
 
-
+SOLUTION: 106
 '''
 
 import csv

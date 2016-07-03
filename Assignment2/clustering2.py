@@ -22,10 +22,11 @@ The question is: what is the largest value of k such that there is a k-clusterin
 
 NOTE: The graph implicitly defined by the data file is so big that you probably can't write it out explicitly, let alone sort the edges by cost. So you will have to be a little creative to complete this part of the question. For example, is there some way you can identify the smallest distances without explicitly looking at every pair of nodes?
 
+SOLUTION: 6118
 
 '''
 
 import clustering_big as clb
 
 fname = "clustering_big.txt"
-clb.find_clusters(fname, 200)
+clb.find_clusters(fname, 200000)
