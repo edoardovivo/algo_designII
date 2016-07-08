@@ -17,34 +17,43 @@ OPTIONAL: You can use whatever algorithm you like to solve this question. If you
 import numpy as np
 from apsp_cython import *
 
+
 def find_edges(graph, v):
     weights = np.array([x[2] for x in graph if x[1] == v])
     i = np.argmin(weights)
     return ()
 
 
-def main():
-    fname = "g1.txt"
+def read_graph(fname):
     first_line = open(fname).readline().strip('\n').split(' ')
     n_nodes = int(first_line[0])
     n_edges = int(first_line[1])
-    graph = np.loadtxt(fname, skiprows=1)
-    graph = [(int(x[0]), int(x[1]), x[2]) for x in graph]
+    graph_matrix = np.loadtxt(fname, skiprows=1)
+    #graph = [(int(x[0]), int(x[1]), x[2]) for x in graph_matrix]
 
-    source = 1
-    V = set([int(i) for x in graph for i in (x[0], x[1])]) - set([source])
-    
-    g1 = {}
-    for x in graph:
-        if (x[1]) in g1:
-            g1[x[1]].append((x[0], x[2]))
-        else:
-            g1[x[1]] = [(x[0], x[2])] 
+    return (n_nodes, n_edges, graph_matrix)
 
 
-    sp = bellman_ford(g1, V, source, n_nodes, n_edges)
+def main():
+    # fname ="g1.txt"
+
+    # V = set([int(i) for x in graph for i in (x[0], x[1])]) - set([source])
+
+    # g1 = {}
+    # for x in graph:
+    #     if (x[1]) in g1:
+    #         g1[x[1]].append((x[0], x[2]))
+    #     else:
+    #         g1[x[1]] = [(x[0], x[2])]
+
+    # sp = bellman_ford(g1, V, source, n_nodes, n_edges)
+    fnames = ["g1.txt", "g2.txt", "g3.txt"]
+    sp = []
+    for f in fnames:
+        n_nodes, n_edges, graph_matrix = read_graph(f)
+        sp.append(floyd_warshall(graph_matrix, n_nodes, n_edges))
+
     print sp
-
 
 
 if __name__ == "__main__":

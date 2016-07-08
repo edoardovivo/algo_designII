@@ -3,6 +3,26 @@ cimport numpy as np
 
 
 
+cpdef float floyd_warshall(graph, n_nodes, n_edges):
+    cdef np.ndarray[double, ndim=2] A = np.ones((n_nodes, n_nodes))*np.inf
+    # Initialization
+    for i in range(n_edges):
+        A[int(graph[i, 0])-1, int(graph[i, 1])-1] = graph[i, 2]
+    for i in range(n_nodes):
+        A[i, i] = 0
+
+    # Start algorithm
+    for k in range(n_nodes):
+        for i in range(n_nodes):
+            A[i, :] = np.min((A[i, :], A[i, k] + A[k, :]), axis=0)
+            if A[i, i] < 0:
+                return -np.inf
+
+    return A[:, :].min()
+
+
+
+
 cpdef float bellman_ford(g1, V, source, n_nodes, n_edges):
     #A = np.zeros((n_edges, n_nodes), dtype=float)
 
