@@ -61,6 +61,16 @@ def tour_length(tour):
                for i in range(len(tour)))
 
 
+def shortest_tour(tours):
+    "Choose the tour with the minimum tour length."
+    return min(tours, key=tour_length)
+
+
+def nearest_neighbor(A, cities):
+    "Find the city in cities that is nearest to city A."
+    return min(cities, key=lambda c: distance(c, A))
+
+
 def reverse_segment_if_better(tour, i, j):
     "If reversing tour[i:j] would make the tour shorter, then do it."
     # Given tour [...A-B...C-D...], consider reversing B...C to get
@@ -94,7 +104,8 @@ def nn_tsp(cities, start=None):
     """Start the tour at the first city; at each step extend the tour 
     by moving from the previous city to its nearest neighbor 
     that has not yet been visited."""
-    if (start == None): start = iter(cities).next()
+    if (start == None):
+        start = iter(cities).next()
     tour = [start]
     unvisited = set(cities - {start})
     while unvisited:
@@ -113,16 +124,6 @@ def repeated_altered_nn_tsp(cities, repetitions=20):
     "Use alteration to improve each repetition of nearest neighbors."
     return shortest_tour(alter_tour(nn_tsp(cities, start))
                          for start in sample(cities, repetitions))
-
-
-def shortest_tour(tours): 
-    "Choose the tour with the minimum tour length."
-    return min(tours, key=tour_length)
-
-
-def nearest_neighbor(A, cities):
-    "Find the city in cities that is nearest to city A."
-    return min(cities, key=lambda c: distance(c, A))
 
 
 def main():
