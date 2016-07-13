@@ -16,7 +16,6 @@ HINT: You might experiment with ways to reduce the data set size. For example, t
 
 import numpy as np
 import itertools
-import UnionFind
 
 
 def read_graph(fname):
@@ -67,48 +66,13 @@ def tsp(n_cities, graph_matrix, distances):
     return AS_final
 
 
-def kruskal(graph, k):
-
-    graph_nodeset = []
-    for edge in graph:
-        graph_nodeset.append(int(edge[0]))
-        graph_nodeset.append(int(edge[1]))
-    graph_nodeset = set(graph_nodeset)
-    n_nodes = len(graph_nodeset)
-    U = UnionFind.UnionFind(n_nodes)
-
-    # Sort edges
-    sorted_edges = sorted(graph, key=lambda x: x[2])  # , reverse=True)
-    T = []
-    for edge in sorted_edges:
-        n = U.size
-
-        n1 = int(edge[0]) - 2
-        n2 = int(edge[1]) - 2
-        # Check for loops
-        # print U.find(n1)
-
-        # print U.find(n2)
-        if (U.find(n1) != U.find(n2)):
-            # No loops. Adding the edge to the graph
-            if (n == k):
-                return U, T, edge[2]
-            else:
-                T.append(edge)
-                U.union(n1, n2)
-    return U, T
-
-
-
-
-
 def main():
     fname = "tsp_.txt"
     n_cities, graph_matrix = read_graph(fname)
     distances = compute_distances(n_cities, graph_matrix)
     AS = tsp(n_cities, graph_matrix, distances)
     print AS
-    
+
 
 if __name__ == "__main__":
     main()
