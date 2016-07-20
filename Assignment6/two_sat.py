@@ -1,5 +1,6 @@
 import numpy as np
-import two_sat_cython as tsc
+import networkx as nx
+
 
 def read_2sat(fname):
     first_line = open(fname).readline().strip('\n').split(' ')
@@ -30,6 +31,20 @@ def read_make_graph(fname):
     return graph
 
 
+def read_make_graph_nx(fname):
+    first_line = open(fname).readline().strip('\n').split(' ')
+    n_vars = int(first_line[0])
+    sat_conditions = np.loadtxt(fname, skiprows=1)
+    graph = nx.DiGraph()
+    graph.add_nodes_from([x for x in range(- n_vars, n_vars + 1) if x != 0])
+    for i in range(n_vars):
+        x1 = int(sat_conditions[i, 0])
+        x2 = int(sat_conditions[i, 1])
+        graph.add_edge(-x1, x2)
+        graph.add_edge(-x2, x1)
+    return graph
+
+
 def check(visited_order):
     visited_opposite = set([-x for x in visited_order])
     s = set(visited_order).intersection(visited_opposite)
@@ -44,7 +59,8 @@ def DFS_connected_components(graph):
     n = len(graph)
     visited = []
     while n > 0:
-        start = graph.iterkeys().next() #max(graph.keys(), key=lambda x: len(graph[x]))
+        # max(graph.keys(), key=lambda x: len(graph[x]))
+        start = graph.iterkeys().next()
         visited_order = DFS(graph, start, 'direct')
         # We need to check if -x and x appear in the same connected component.
         if check(visited_order):
@@ -74,15 +90,32 @@ def DFS(graph, start, mode):
                 nodes = graph[u]
             else:
                 continue
-            S.extend([w for w in nodes if (w in visited and not visited[w]) or w not in visited_order])
+            S.extend([w for w in nodes if (
+                w in visited and not visited[w]) or w not in visited_order])
 
     return visited_order
 
 
+def check_graph_scc_nx(components):
+    for c in components:
+        if len(c) > 1:
+            nodes = [node for node in c]
+            if not check(nodes):
+                print False
+                return False
+    print True
+    return True
+
+
 def main():
-    fname = "2sat1.txt"
-    graph = read_make_graph(fname)
-    return graph
+    fnames = ["2sat%d.txt" % x for x in range(1, 7)]
+    satisfiable = []
+    for name in fnames:
+        graph = read_make_graph_nx(name)
+        components = nx.strongly_connected_components(graph)
+        sat = check_graph_scc_nx(components)
+        satisfiable.append(sat)
+    return satisfiable
 
 
 if __name__ == '__main__':
